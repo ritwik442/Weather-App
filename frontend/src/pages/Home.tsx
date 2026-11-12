@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { CandidatePicker } from '../components/CandidatePicker';
 import { CurrentWeatherCard } from '../components/CurrentWeatherCard';
 import { ErrorMessage } from '../components/ErrorMessage';
+import { ExtrasPanels } from '../components/extras/ExtrasPanels';
 import { ForecastList } from '../components/ForecastList';
 import { LoadingState, SkeletonBlock } from '../components/LoadingState';
 import { SearchBar } from '../components/SearchBar';
@@ -106,6 +107,11 @@ export function Home() {
           />
           <TipsPanel tips={weather.data.tips} />
           <ForecastList days={weather.data.daily} unit={unit} />
+          <ExtrasPanels
+            lat={weather.data.location.lat}
+            lon={weather.data.location.lon}
+            name={weather.data.location.display_name.split(',')[0]?.trim() || weather.data.location.display_name}
+          />
         </>
       )}
 

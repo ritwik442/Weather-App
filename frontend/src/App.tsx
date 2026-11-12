@@ -1,7 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { Nav } from './components/Nav';
 import { Home } from './pages/Home';
+import { SavedRequests } from './pages/SavedRequests';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,9 +16,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <div className="min-h-screen bg-stone-100 text-stone-900">
+          <Nav />
           <ErrorBoundary>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/saved" element={<SavedRequests />} />
               <Route path="*" element={<Home />} />
             </Routes>
           </ErrorBoundary>
