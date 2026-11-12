@@ -19,6 +19,18 @@ async def resolve(
     )
 
 
+@router.get("/autocomplete", response_model=LocationResolveOut)
+async def autocomplete(
+    q: str = Query(min_length=1, description="Partial place name"),
+    limit: int = Query(default=6, ge=1, le=10),
+) -> LocationResolveOut:
+    candidates = await geocoding.autocomplete(q, limit=limit)
+    return LocationResolveOut(
+        query=q,
+        candidates=[LocationCandidateOut(**c.to_dict()) for c in candidates],
+    )
+
+
 @router.get("/extras")
 async def get_extras(
     lat: float = Query(ge=-90.0, le=90.0),

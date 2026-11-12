@@ -146,15 +146,31 @@ async def _nominatim_reverse(lat: float, lon: float) -> list[LocationCandidate]:
     return _parse_nominatim([data])
 
 
-async def _open_meteo_search(name: str) -> list[LocationCandidate]:
+async def _open_meteo_search(name: str, count: int = 5) -> list[LocationCandidate]:
     data = await http.get_json(
         _OM_GEOCODE,
-        params={"name": name, "count": 5, "language": "en", "format": "json"},
+        params={"name": name, "count": count, "language": "en", "format": "json"},
         upstream_name="open-meteo geocoding",
     )
     if not isinstance(data, dict):
         raise UpstreamFailure("Unexpected open-meteo geocoding response.")
     return _parse_open_meteo(data)
+
+
+async def autocomplete(query: str, limit: int = 6) -> list[LocationCandidate]:
+    """Lightweight suggestions as the user types, via Open-Meteo.
+
+    Deliberately skips Nominatim (whose policy forbids autocomplete use).
+    Returns an empty list for very short queries so clients don't hammer
+    the API on every keystroke.
+    """
+    text = query.strip()
+    if len(text) < 2:
+        return []
+    try:
+        return await _open_meteo_search(text, count=limit)
+    except UpstreamFailure:
+        return []
 
 
 async def _open_meteo_reverse(lat: float, lon: float) -> list[LocationCandidate]:
