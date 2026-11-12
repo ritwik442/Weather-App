@@ -51,13 +51,13 @@ export function SearchBar({ onSubmit, onUseMyLocation, geolocating, disabled }: 
           e.preventDefault();
           submit(raw);
         }}
-        className="flex gap-2"
+        className="flex flex-col gap-2 sm:flex-row"
       >
         <label className="sr-only" htmlFor="location-search">
           Search for a location
         </label>
-        <div className="flex flex-1 items-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 focus-within:border-stone-500">
-          <Search aria-hidden className="h-4 w-4 text-stone-500" />
+        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 focus-within:border-stone-500">
+          <Search aria-hidden className="h-4 w-4 flex-none text-stone-500" />
           <input
             id="location-search"
             type="text"
@@ -70,31 +70,36 @@ export function SearchBar({ onSubmit, onUseMyLocation, geolocating, disabled }: 
               setRaw(e.target.value);
               setOpen(true);
             }}
-            className="flex-1 bg-transparent text-sm text-stone-900 placeholder-stone-400 focus:outline-none"
+            className="min-w-0 flex-1 bg-transparent text-sm text-stone-900 placeholder-stone-400 focus:outline-none"
           />
-          {suggestions.isFetching && <Loader2 aria-hidden className="h-4 w-4 animate-spin text-stone-500" />}
-        </div>
-        <button
-          type="submit"
-          disabled={disabled}
-          className="rounded-full border border-stone-300 bg-stone-800 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500"
-        >
-          Search
-        </button>
-        <button
-          type="button"
-          onClick={onUseMyLocation}
-          disabled={geolocating || disabled}
-          aria-label="Use my location"
-          className="inline-flex items-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-800 hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500"
-        >
-          {geolocating ? (
-            <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
-          ) : (
-            <LocateFixed aria-hidden className="h-4 w-4" />
+          {suggestions.isFetching && (
+            <Loader2 aria-hidden className="h-4 w-4 flex-none animate-spin text-stone-500" />
           )}
-          <span>My location</span>
-        </button>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={disabled}
+            className="flex-1 rounded-full border border-stone-300 bg-stone-800 px-4 py-2 text-sm font-medium text-white hover:bg-stone-700 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 sm:flex-none"
+          >
+            Search
+          </button>
+          <button
+            type="button"
+            onClick={onUseMyLocation}
+            disabled={geolocating || disabled}
+            aria-label="Use my location"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-stone-300 bg-white px-4 py-2 text-sm font-medium text-stone-800 hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 sm:flex-none"
+          >
+            {geolocating ? (
+              <Loader2 aria-hidden className="h-4 w-4 animate-spin" />
+            ) : (
+              <LocateFixed aria-hidden className="h-4 w-4" />
+            )}
+            <span className="hidden sm:inline">My location</span>
+            <span className="sm:hidden">Locate me</span>
+          </button>
+        </div>
       </form>
 
       {open && candidates.length > 0 && (

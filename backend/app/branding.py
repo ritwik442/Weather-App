@@ -5,7 +5,7 @@ hunting through routers and templates.
 """
 
 APP_NAME = "Weather App"
-AUTHOR_NAME = "Author TBD"
+AUTHOR_NAME = "Ritwik Aggarwal"
 PM_ACCELERATOR_BLURB = (
     "Product Manager Accelerator (PM Accelerator) is a professional development "
     "community that helps people break into and advance in product management, "

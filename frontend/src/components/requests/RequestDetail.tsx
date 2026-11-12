@@ -30,16 +30,16 @@ export function RequestDetail({ id, unit, onBack, onEdit, onDelete }: Props) {
 
   return (
     <section className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-y-2 gap-x-3">
         <button
           type="button"
           onClick={onBack}
-          className="inline-flex items-center gap-1 text-sm text-stone-700 hover:text-stone-950"
+          className="inline-flex items-center gap-1 text-sm text-stone-700 hover:text-stone-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500"
         >
           <ChevronLeft aria-hidden className="h-4 w-4" />
           Back to list
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <ExportMenu ids={[r.id]} label="Export this" />
           <button
             type="button"

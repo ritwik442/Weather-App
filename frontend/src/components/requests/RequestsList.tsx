@@ -34,8 +34,9 @@ export function RequestsList({ onOpen }: Props) {
         <h2 className="text-sm font-medium uppercase tracking-wide text-stone-500">
           Saved requests
         </h2>
-        <div className="flex items-center gap-2 rounded-full border border-stone-300 px-3 py-1.5">
-          <Search aria-hidden className="h-4 w-4 text-stone-500" />
+        <label className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-stone-300 px-3 py-1.5 focus-within:border-stone-500 sm:flex-none">
+          <Search aria-hidden className="h-4 w-4 flex-none text-stone-500" />
+          <span className="sr-only">Search saved requests by location</span>
           <input
             type="search"
             value={q}
@@ -44,9 +45,9 @@ export function RequestsList({ onOpen }: Props) {
               setQ(e.target.value);
               setPage(1);
             }}
-            className="w-56 bg-transparent text-sm text-stone-900 placeholder-stone-400 focus:outline-none"
+            className="min-w-0 flex-1 bg-transparent text-sm text-stone-900 placeholder-stone-400 focus:outline-none sm:w-56 sm:flex-none"
           />
-        </div>
+        </label>
       </header>
 
       <div className="px-5 py-3">
