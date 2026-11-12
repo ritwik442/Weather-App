@@ -10,7 +10,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_session
 from app.main import app
-from app.services import geocoding, weather
+from app.services import extras, geocoding, weather
 
 
 @pytest.fixture
@@ -51,6 +51,8 @@ def client(db_session: Session) -> Iterator[TestClient]:
 def _clear_service_caches() -> Iterator[None]:
     geocoding.clear_cache_for_tests()
     weather.clear_caches_for_tests()
+    extras.clear_cache_for_tests()
     yield
     geocoding.clear_cache_for_tests()
     weather.clear_caches_for_tests()
+    extras.clear_cache_for_tests()

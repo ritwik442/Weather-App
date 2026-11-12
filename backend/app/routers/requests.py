@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi.responses import Response as FastAPIResponse
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
@@ -17,6 +18,7 @@ from app.schemas import (
     WeatherRequestOut,
     WeatherRequestUpdate,
 )
+from app.services import export as export_service
 from app.services import geocoding, weather
 
 router = APIRouter(prefix="/requests", tags=["requests"])
@@ -175,6 +177,50 @@ def list_requests(
     return RequestListOut(
         total=total,
         items=[RequestListItem.model_validate(r) for r in items],
+    )
+
+
+@router.get("/export")
+def export_requests(
+    session: Session = Depends(get_session),
+    format: str = Query(
+        default="json",
+        description=f"One of: {', '.join(export_service.SUPPORTED_FORMATS)}",
+    ),
+    ids: str | None = Query(
+        default=None,
+        description="Comma-separated request ids to export. Omit to export all.",
+    ),
+) -> FastAPIResponse:
+    fmt = format.lower()
+    if fmt not in export_service.SUPPORTED_FORMATS:
+        raise ValidationFailed(
+            "Unsupported export format.",
+            details={"allowed": list(export_service.SUPPORTED_FORMATS)},
+        )
+
+    stmt = select(WeatherRequest).options(
+        selectinload(WeatherRequest.location),
+        selectinload(WeatherRequest.daily),
+    )
+    if ids:
+        try:
+            id_list = [int(part) for part in ids.split(",") if part.strip()]
+        except ValueError as exc:
+            raise ValidationFailed(
+                "ids must be a comma-separated list of integers.",
+                details={"ids": ids},
+            ) from exc
+        if not id_list:
+            raise ValidationFailed("ids is empty.", details={"ids": ids})
+        stmt = stmt.where(WeatherRequest.id.in_(id_list))
+
+    records = session.scalars(stmt.order_by(WeatherRequest.created_at.asc())).all()
+    body, media_type, filename = export_service.export(fmt, list(records))
+    return FastAPIResponse(
+        content=body,
+        media_type=media_type,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
 
