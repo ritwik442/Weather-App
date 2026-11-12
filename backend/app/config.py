@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     database_url: str = "sqlite:///./weather.db"
     nominatim_user_agent: str = "weather-app/0.1"
     youtube_api_key: str | None = None
+    max_request_span_days: int = 366
+    archive_first_date: str = "1940-01-01"
 
     @field_validator("cors_origins", mode="before")
     @classmethod
